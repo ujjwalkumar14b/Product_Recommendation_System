@@ -1,0 +1,8 @@
+joblib
+flask
+numpy
+pandas
+matplotlib
+seaborn
+python-dotenv
+#-e .
