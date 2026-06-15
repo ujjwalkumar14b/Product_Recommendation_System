@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>PickPerfect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container py-4">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='Logo.png') }}" alt="Logo"></a>
+                <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <form class="d-flex gap-3 ms-auto" role="search" method="POST" action="/recommend">
+                        <select name="product" class="form-select" required>
+                            <option value="">Select Product</option>
+                            {% for product in products %}
+                            <option value="{{ product }}"
+                                {% if product == selected_product %}selected{% endif %}>
+                                {{ product }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-custom" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        
+        {% if selected_product %}
+        <!-- Selected Product -->
+        <div class="recommendation-heading">
+            Showing recommendations for
+            <span class="highlight">{{ selected_product }}</span>
+        </div>
+
+        <!-- Hybrid Recommendation -->
+        <h3 class="section-title">Recommended For You</h3>
+        <div class="product-grid">
+            {% for item in hybrid_recommendations %}
+            <div class="card product-card">
+                <div class="product-img"><img src="https://placehold.co/300x300/000000/FFFFFF?text={{ item|replace(' ','+') }}"></div>
+                <div class="card-body">
+                    <h6>{{ item }}</h6>
+                    <p class="mb-1 text-secondary">
+                        Price: <span>${{ product_details[item]['price'] if item in product_details else 'N/A' }}</span>
+                    </p>
+                    <p class="mb-3 text-secondary">
+                        Country: <span>{{ product_details[item]['country'] if item in product_details else 'Unknown' }}</span>
+                    </p>
+                    <button class="btn btn-view w-100">Add to Cart</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Item Based Collaborative Recommendation -->
+        <h3 class="section-title">Similar Products</h3>
+        <div class="product-grid">
+            {% for item in item_recommendations %}
+            <div class="card product-card">
+                <div class="product-img"><img src="https://placehold.co/300x300/000000/FFFFFF?text={{ item|replace(' ','+') }}"></div>
+                <div class="card-body">
+                    <h6>{{ item }}</h6>
+                    <p class="mb-1 text-secondary">
+                        Price: <span>${{ product_details[item]['price'] if item in product_details else 'N/A' }}</span>
+                    </p>
+                    <p class="mb-3 text-secondary">
+                        Country: <span>{{ product_details[item]['country'] if item in product_details else 'Unknown' }}</span>
+                    </p>
+                    <button class="btn btn-view w-100">Add to Cart</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Content Based Recommendations -->
+        <h3 class="section-title">You May Also Like</h3>
+        <div class="product-grid">
+            {% for item in content_recommendations %}
+            <div class="card product-card">
+                <div class="product-img"><img src="https://placehold.co/300x300/000000/FFFFFF?text={{ item|replace(' ','+') }}"></div>
+                <div class="card-body">
+                    <h6>{{ item }}</h6>
+                    <p class="mb-1 text-secondary">
+                        Price: <span>${{ product_details[item]['price'] if item in product_details else 'N/A' }}</span>
+                    </p>
+                    <p class="mb-3 text-secondary">
+                        Country: <span>{{ product_details[item]['country'] if item in product_details else 'Unknown' }}</span>
+                    </p>
+                    <button class="btn btn-view w-100">Add to Cart</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Popularity Based Recommendation -->
+        <h3 class="section-title">Trending Products</h3>
+        <div class="product-grid">
+            {% for item in popular_recommendations %}
+            <div class="card product-card">
+                <div class="product-img"><img src="https://placehold.co/300x300/000000/FFFFFF?text={{ item|replace(' ','+') }}"></div>
+                <div class="card-body">
+                    <h6>{{ item }}</h6>
+                    <p class="mb-1 text-secondary">
+                        Price: <span>${{ product_details[item]['price'] if item in product_details else 'N/A' }}</span>
+                    </p>
+                    <p class="mb-3 text-secondary">
+                        Country: <span>{{ product_details[item]['country'] if item in product_details else 'Unknown' }}</span>
+                    </p>
+                    <button class="btn btn-view w-100">Add to Cart</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% endif %}
+
+        
+        <div class="info-section">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="info-card">
+                        <div class="info-title">Collaborative Filtering</div>
+                        <div class="info-text">
+                            Collaborative filtering recommends products based on the behavior and preferences of similar users. If multiple users liked the same products, the system predicts that they may like similar products in the future as well.
+                            <br><br>
+                            This method focuses on user interaction data such as ratings, clicks, or purchases rather than product details. It is widely used in platforms like Amazon and Netflix for recommending product and movies respectively.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 section-image"><img src="{{ url_for('static', filename='1.png') }}" alt="Product Image"></div>
+            </div>
+        </div>
+        <div class="info-section">
+            <div class="row align-items-center g-5 flex-lg-row-reverse">
+                <div class="col-lg-6">
+                    <div class="info-card">
+                        <div class="info-title">Content Based Filtering</div>
+                        <div class="info-text">
+                            Content-based filtering recommends products similar to items a user has previously shown interest in. It analyzes product attributes like category, descriptions and features to generate personalized recommendations.
+                            <br><br>
+                            For example, if a user purchases gaming laptops, the system may recommend other laptops with comparable hardware specifications and processing power. It help users to discover relevant products that closely match their interests.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 section-image"><img src="{{ url_for('static', filename='2.png') }}" alt="Product Image"></div>
+            </div>
+        </div>
+        <div class="info-section">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="info-card">
+                        <div class="info-title">Hybrid Recommendation System</div>
+                        <div class="info-text">
+                            Hybrid filtering combines collaborative and content-based recommendation techniques to improve overall accuracy and relevance. By leveraging the strengths of both methods, it minimizes individual limitations and generates more reliable, diverse, and personalized recommendations for users.
+                            <br><br>
+                            By analyzing user behavior alongside product characteristics, the system delivers highly relevant recommendations, enhancing user experience, engagement, satisfaction, and overall shopping outcomes.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 section-image"><img src="{{ url_for('static', filename='3.png') }}" alt="Product Image"></div>
+            </div>
+        </div>
+        <div class="info-section">
+            <div class="row align-items-center g-5 flex-lg-row-reverse">
+                <div class="col-lg-6">
+                    <div class="info-card">
+                        <div class="info-title">Popularity Based Filtering</div>
+                        <div class="info-text">
+                            Popularity-based filtering recommends products that are trending, highly rated or frequently purchased across the platform. These recommendations are not personalized but help users discover widely preferred products and improve engagement, especially among first-time visitors.
+                            <br><br>
+                            This technique is particularly useful when user interaction data is limited or unavailable. During the cold start problem, it provide relevant suggestions before sufficient behavioral information has been collected.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 section-image"><img src="{{ url_for('static', filename='4.png') }}" alt="Product Image"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">© 2026 PickPerfect • Product Recommendation System</div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
