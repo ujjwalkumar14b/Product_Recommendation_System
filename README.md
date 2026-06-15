@@ -1,5 +1,5 @@
 # Product Recommendation System
-![Deployment Screenshot](deployment.png)
+![Deployment Screenshot]([deployment.png](https://github.com/ujjwalkumar14b/Product_Recommendation_System/blob/main/static/deployment_1.jpg))
 
 ## Overview
 This project recommend products based on user preference. It is done by collaborative, content-based, hybrid filtering techniques and popularity techniques.The solution includes end-to-end data preprocessing pipeline, feature engineering, model training and evaluation and web deployment using Flask and Bootstrap.
